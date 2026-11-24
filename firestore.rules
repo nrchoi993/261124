@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function googleUser() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'google.com';
+    }
+    function validActivity(data, id) {
+      return data.keys().hasOnly([
+          'uid', 'displayName', 'email', 'messages', 'turnCount',
+          'chatStartedAt', 'chatEndedAt', 'submittedAtClient',
+          'chatDurationMs', 'drawingDurationMs', 'drawingStoragePath',
+          'drawingContentType', 'drawingWidth', 'drawingHeight', 'savedAt'
+        ])
+        && data.uid == request.auth.uid
+        && data.displayName is string && data.displayName.size() <= 256
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 320
+        && data.turnCount is int && data.turnCount >= 3 && data.turnCount <= 7
+        && data.messages is list && data.messages.size() == 1 + 2 * data.turnCount
+        && data.chatStartedAt is timestamp && data.chatEndedAt is timestamp
+        && data.submittedAtClient is timestamp && data.savedAt == request.time
+        && data.chatDurationMs is int && data.chatDurationMs >= 0
+        && data.drawingDurationMs is int && data.drawingDurationMs >= 0
+        && data.chatDurationMs == data.chatEndedAt.toMillis() - data.chatStartedAt.toMillis()
+        && data.drawingDurationMs == data.submittedAtClient.toMillis() - data.chatEndedAt.toMillis()
+        && data.drawingStoragePath == 'studentActivities/' + request.auth.uid + '/' + id + '.png'
+        && data.drawingContentType == 'image/png'
+        && data.drawingWidth == 1200 && data.drawingHeight == 800;
+    }
+    match /studentActivities/{id} {
+      allow read: if googleUser() && resource.data.uid == request.auth.uid;
+      allow create: if googleUser() && validActivity(request.resource.data, id);
+      // 같은 제출의 재시도만 허용합니다. 이미 저장된 대화·시간·사용자는 바꿀 수 없습니다.
+      allow update: if googleUser() && resource.data.uid == request.auth.uid
+        && validActivity(request.resource.data, id)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['savedAt']);
+    }
+  }
+}

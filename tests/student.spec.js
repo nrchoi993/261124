@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
+import { mockStudentAuth } from './helpers/studentAuth.js'
 
 const endpoint = 'https://api.openai.com/v1/responses'
 const fakeKey = 'sk-browser-test-placeholder'
@@ -7,6 +8,7 @@ const success = text => ({ status: 'completed', output: [{ type: 'message', role
 
 test.beforeEach(async ({ page }) => {
   page.on('pageerror', error => { throw error })
+  await mockStudentAuth(page)
 })
 
 async function mockOpenAI(page, reply = () => success('이야기해 줘서 고마워요. 어떤 마음이 들었나요?')) {
@@ -222,8 +224,8 @@ test('brush opacity, brightness, size, eraser, undo/redo, clear, resize and PNG 
   expect([...png.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10])
   expect(png.readUInt32BE(16)).toBe(1200)
   expect(png.readUInt32BE(20)).toBe(800)
-  await expect(page.locator('#drawing-status')).toContainText('서버로 제출되지는 않았어요')
-  await expect(page.locator('#submit-drawing')).toBeDisabled()
+  await expect(page.locator('#drawing-status')).toContainText('파일만 내려받아요')
+  await expect(page.locator('#submit-drawing')).toBeEnabled()
 })
 
 test.describe('touch drawing', () => {

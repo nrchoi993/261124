@@ -1,4 +1,13 @@
 /* Student activity uses the existing warm theme. */
+.student-account { margin-top: var(--space-lg); padding: var(--space-md) var(--space-lg); border-radius: var(--radius-stock); background: var(--color-paper-2); font-size: 14px; }
+.student-account > p { color: var(--color-muted); }
+.student-account dl { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); margin: var(--space-xs) 0 0; }
+.student-account dl > div { min-width: 0; }
+.student-account dt { color: var(--color-muted); font-size: 12px; }
+.student-account dd { margin: var(--space-2xs) 0 0; overflow-wrap: anywhere; word-break: normal; }
+.student-account > a { display: inline-flex; align-items: center; min-height: 44px; margin-top: var(--space-xs); }
+.drawing-layout[inert] .drawing-controls { opacity: 0.6; }
+#drawing-canvas[aria-disabled='true'] { cursor: not-allowed; }
 .student-app { padding-block: var(--space-xl) var(--space-2xl); }
 .student-heading h1 { font-size: 32px; }
 .student-heading > p { margin-top: var(--space-sm); color: var(--color-muted); }

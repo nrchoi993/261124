@@ -17,13 +17,18 @@
         <h1 id="student-title">나의 하루 돌아보기</h1>
         <p>조금 이야기하고, 오늘을 나만의 색으로 남겨요.</p>
       </div>
+      <section class="student-account" aria-label="접속한 Google 계정">
+        <p id="student-auth-status" role="status" aria-live="polite">로그인 상태를 확인하고 있어요.</p>
+        <dl id="student-profile" hidden><div><dt>이름</dt><dd id="student-name"></dd></div><div><dt>Google 이메일</dt><dd id="student-email"></dd></div></dl>
+        <a id="student-login-link" href="/" hidden>첫 화면에서 Google로 로그인하기</a>
+      </section>
       <ol class="student-progress" aria-label="활동 순서">
         <li id="step-key" aria-current="step">1. 연결 준비</li>
         <li id="step-chat">2. 이야기 나누기</li>
         <li id="step-draw">3. 마음 그리기</li>
       </ol>
       <noscript><p>이 활동에는 JavaScript가 필요해요. 브라우저에서 JavaScript를 활성화해 주세요.</p></noscript>
-      <section id="key-panel" class="key-panel" aria-labelledby="key-title">
+      <section id="key-panel" class="key-panel" aria-labelledby="key-title" hidden>
         <h2 id="key-title">대화를 시작할 준비를 해요</h2>
         <p>본인의 OpenAI API 키를 입력하면 연결을 확인하고 활동이 열려요.</p>
         <form id="key-form" class="key-form">
@@ -85,12 +90,13 @@
               <p id="canvas-help" class="field-hint">마우스, 터치, 펜으로 그릴 수 있어요. 화면 크기가 바뀌어도 그림은 유지돼요.</p>
             </div>
           </div>
-          <div class="drawing-actions"><button id="download-drawing" class="button button-primary" type="button" disabled>PNG로 저장하기</button><button id="submit-drawing" class="button button-secondary" type="button" disabled aria-describedby="submission-note">제출하기</button></div>
+          <div class="drawing-actions"><button id="download-drawing" class="button button-secondary" type="button" disabled>PNG로 저장하기</button><button id="submit-drawing" class="button button-primary" type="button" disabled aria-describedby="submission-note">제출하기</button></div>
           <p id="drawing-status" class="status-message" role="status" aria-live="polite"></p>
-          <p id="submission-note" class="field-hint">Firebase 제출 기능은 아직 연결되지 않았어요. 그림은 PNG로 저장할 수 있고, 서버로 전송되지 않아요.</p>
+          <p id="submission-status" class="status-message" role="status" aria-live="polite"></p>
+          <p id="submission-note" class="field-hint">제출하면 이름, Google 이메일, 전체 대화, 대화·그림 활동 시간과 PNG 그림이 함께 저장돼요.</p>
         </section>
       </div>
-      <p class="field-hint session-note">대화와 그림은 새로고침하거나 페이지를 닫으면 사라져요. 그림을 완성하면 PNG로 저장해 주세요.</p>
+      <p id="session-note" class="field-hint session-note">제출 전 새로고침하거나 페이지를 닫으면 대화와 그림이 사라져요. 제출 완료 안내를 확인해 주세요.</p>
     </main>
     <footer class="site-footer container"><p>서두르지 않아도 괜찮아요.</p><span>오늘의 마음</span></footer>
     <script type="module" src="/src/main.js"></script>

@@ -26,6 +26,7 @@ export function createDrawingBoard(root, { onChange = () => {} } = {}) {
   let current = null
   let pointerId = null
   let tool = 'pen'
+  let locked = false
 
   function whiteBackground(target) {
     target.clearRect(0, 0, canvas.width, canvas.height)
@@ -110,7 +111,7 @@ export function createDrawingBoard(root, { onChange = () => {} } = {}) {
   }
 
   canvas.addEventListener('pointerdown', event => {
-    if (pointerId !== null || !event.isPrimary || event.button !== 0) return
+    if (locked || pointerId !== null || !event.isPrimary || event.button !== 0) return
     event.preventDefault()
     pointerId = event.pointerId
     canvas.setPointerCapture(pointerId)
@@ -198,6 +199,13 @@ export function createDrawingBoard(root, { onChange = () => {} } = {}) {
 
   return {
     hasDrawing,
+    setLocked(next) {
+      if (locked === next) return
+      locked = next
+      finishStroke()
+      root.querySelector('.drawing-layout').inert = locked
+      canvas.setAttribute('aria-disabled', String(locked))
+    },
     exportPng() {
       finishStroke()
       return new Promise((resolve, reject) => {
