@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run rules:generate && vite build",
     "preview": "vite preview",
     "test": "npm run test:unit && playwright test",
-    "test:unit": "node --test tests/*.test.js"
+    "test:unit": "node --test tests/*.test.js",
+    "rules:generate": "node scripts/generateFirebaseRules.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",

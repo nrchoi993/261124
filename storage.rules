@@ -1,12 +1,22 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    function adminUser() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.uid in [
+          // admin-uids:start
+          "aGxIqidP9hQNuvoP73DOJqi0ieQ2"
+          // admin-uids:end
+        ];
+    }
     match /studentActivities/{uid}/{fileName} {
       function owner() {
         return request.auth != null && request.auth.uid == uid
           && request.auth.token.firebase.sign_in_provider == 'google.com';
       }
-      allow read: if owner();
+      allow read: if owner() || adminUser();
+      allow delete: if adminUser();
       allow create, update: if owner()
         && fileName.matches('[a-zA-Z0-9_-]+[.]png')
         && request.resource.contentType == 'image/png'

@@ -5,6 +5,13 @@ service cloud.firestore {
       return request.auth != null
         && request.auth.token.firebase.sign_in_provider == 'google.com';
     }
+    function adminUser() {
+      return googleUser() && request.auth.uid in [
+        // admin-uids:start
+        "aGxIqidP9hQNuvoP73DOJqi0ieQ2"
+        // admin-uids:end
+      ];
+    }
     function validActivity(data, id) {
       return data.keys().hasOnly([
           'uid', 'displayName', 'email', 'messages', 'turnCount',
@@ -28,7 +35,8 @@ service cloud.firestore {
         && data.drawingWidth == 1200 && data.drawingHeight == 800;
     }
     match /studentActivities/{id} {
-      allow read: if googleUser() && resource.data.uid == request.auth.uid;
+      allow read: if adminUser() || (googleUser() && resource.data.uid == request.auth.uid);
+      allow delete: if adminUser();
       allow create: if googleUser() && validActivity(request.resource.data, id);
       // 같은 제출의 재시도만 허용합니다. 이미 저장된 대화·시간·사용자는 바꿀 수 없습니다.
       allow update: if googleUser() && resource.data.uid == request.auth.uid

@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="학생의 대화와 그림 활동을 살펴볼 오늘의 마음 교사 대시보드를 준비하고 있습니다." />
+    <meta name="description" content="날짜별로 학생의 대화와 그림 활동을 살펴보는 교사 모니터링 공간입니다." />
     <title>교사 대시보드 | 오늘의 마음</title>
   </head>
-  <body>
+  <body class="teacher-view">
     <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
     <header class="site-header container">
       <a class="wordmark" href="/">오늘의 마음<span class="brand-caption">나를 알아가는 작은 시간</span></a>
@@ -14,20 +14,40 @@
     </header>
     <p id="teacher-access-status" class="teacher-access-status container" role="status" aria-live="polite">접근 권한을 확인하고 있어요.</p>
     <noscript><p class="container">이 페이지를 이용하려면 JavaScript를 활성화해 주세요. <a href="/">첫 화면으로 돌아가기</a></p></noscript>
-    <main id="main-content" class="container preparation" hidden>
-      <section class="preparation-content" aria-labelledby="teacher-title">
-        <h1 id="teacher-title">학생의 마음 곁에서</h1>
-        <p class="intro">작은 표현 속에 담긴 하루를 살펴봐요.</p>
-        <p>학생들이 나눈 이야기와 제출한 그림을 확인할<br class="desktop-break" /> 교사 대시보드가 이곳에 마련될 예정입니다.</p>
-        <p class="preparation-notice">관리자 계정의 접근이 확인되었습니다.<br />학생 기록을 조회할 교사 대시보드는 준비 중입니다.</p>
-        <a class="button button-primary" href="/">첫 화면으로 돌아가기</a>
-      </section>
-      <aside class="preparation-aside" aria-label="예정된 대시보드 기능">
-        <h2>이곳에서 확인하게 될 내용</h2>
-        <ul class="upcoming-list"><li>학생들의 활동 참여 현황</li><li>오늘 학교 공부에 관한 대화</li><li>하루를 표현해 제출한 그림</li></ul>
+    <main id="main-content" class="container teacher-layout" hidden>
+      <aside class="teacher-sidebar teacher-column" aria-labelledby="teacher-title">
+        <h1 id="teacher-title">교사 모니터링</h1>
+        <p id="teacher-account" class="teacher-account"></p>
+        <div class="teacher-section-heading"><h2>제출 날짜</h2><button id="refresh-activities" class="monitor-button" type="button">새로고침</button></div>
+        <p class="monitor-hint">한국 시간 기준, 여러 날짜를 선택할 수 있어요.</p>
+        <div class="date-actions"><button id="select-all-dates" class="monitor-text-button" type="button" disabled>전체 선택</button><button id="clear-all-dates" class="monitor-text-button" type="button" disabled>선택 해제</button></div>
+        <div id="activity-dates" class="activity-dates" role="group" aria-label="제출 날짜 필터"></div>
+        <div class="teacher-section-heading"><h2>학생 활동</h2><span id="activity-count" class="monitor-hint">0건</span></div>
+        <p id="activity-list-status" class="monitor-status" role="status" aria-live="polite">기록을 불러오고 있어요.</p>
+        <ul id="activity-list" class="activity-list" aria-label="학생 활동 기록"></ul>
       </aside>
+      <section class="teacher-conversation teacher-column" aria-labelledby="conversation-title">
+        <h2 id="conversation-title">나눈 대화</h2>
+        <p id="selected-activity-label" class="selected-activity-label">왼쪽에서 활동 기록을 선택해 주세요.</p>
+        <p id="selected-activity-email" class="monitor-hint"></p>
+        <dl id="activity-durations" class="activity-durations" hidden><div><dt>대화 시간</dt><dd id="selected-chat-duration"></dd></div><div><dt>그림 시간</dt><dd id="selected-drawing-duration"></dd></div></dl>
+        <div id="teacher-messages" class="teacher-messages" tabindex="0" aria-label="선택한 학생의 전체 대화"><p class="detail-placeholder">학생이 남긴 이야기가 이곳에 표시돼요.</p></div>
+      </section>
+      <section class="teacher-drawing teacher-column" aria-labelledby="teacher-drawing-title">
+        <h2 id="teacher-drawing-title">오늘의 그림</h2>
+        <p id="teacher-image-status" class="monitor-status" role="status" aria-live="polite">활동 기록을 선택하면 그림을 볼 수 있어요.</p>
+        <div class="teacher-image-frame"><img id="teacher-drawing-image" alt="선택한 학생이 제출한 그림" hidden /></div>
+        <button id="retry-teacher-image" class="monitor-button" type="button" hidden>그림 다시 불러오기</button>
+        <p id="teacher-action-status" class="monitor-status" role="status" aria-live="polite"></p>
+      </section>
     </main>
-    <footer class="site-footer container"><p>평가보다 이해로, 학생의 하루에 한 걸음.</p><span>오늘의 마음</span></footer>
+    <dialog id="delete-activity-dialog" class="delete-activity-dialog" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+      <h2 id="delete-dialog-title">이 활동 기록을 삭제할까요?</h2>
+      <p id="delete-activity-label"></p>
+      <p id="delete-dialog-description">전체 대화, 활동 시간과 연결된 그림을 함께 삭제해요. 삭제한 내용은 되돌릴 수 없어요.</p>
+      <p id="delete-dialog-status" class="monitor-status" role="status" aria-live="polite"></p>
+      <div class="delete-dialog-actions"><button id="cancel-delete-activity" class="monitor-button" type="button" autofocus>취소</button><button id="confirm-delete-activity" class="monitor-button monitor-danger" type="button">기록과 그림 삭제</button></div>
+    </dialog>
     <script type="module" src="/src/admin.js"></script>
   </body>
 </html>
