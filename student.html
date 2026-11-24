@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="오늘의 마음 학생 활동 공간입니다. 대화와 그림 활동을 준비하고 있어요." />
+    <meta name="description" content="챗봇과 학교에서의 하루를 돌아보고, 오늘의 마음을 그림으로 표현해 보세요." />
     <title>학생 활동 | 오늘의 마음</title>
   </head>
   <body>
@@ -12,18 +12,85 @@
       <a class="wordmark" href="/">오늘의 마음<span class="brand-caption">나를 알아가는 작은 시간</span></a>
       <nav aria-label="주요 메뉴"><a href="/">처음으로</a></nav>
     </header>
-    <main id="main-content" class="container preparation">
-      <section class="preparation-content" aria-labelledby="student-title">
+    <main id="main-content" class="container student-app">
+      <div class="student-heading">
         <h1 id="student-title">나의 하루 돌아보기</h1>
-        <p class="intro">오늘 하루, 어떤 마음이 들었나요?</p>
-        <p>이곳에서 챗봇과 학교 공부 이야기를 나누고,<br class="desktop-break" /> 오늘의 마음을 그림으로 표현하게 될 거예요.</p>
-        <p class="preparation-notice">학생 활동을 준비하고 있어요.<br />Google 로그인, 대화, 그림 그리기와 제출은 아직 사용할 수 없어요.</p>
-        <a class="button button-primary" href="/">첫 화면으로 돌아가기</a>
+        <p>조금 이야기하고, 오늘을 나만의 색으로 남겨요.</p>
+      </div>
+      <ol class="student-progress" aria-label="활동 순서">
+        <li id="step-key" aria-current="step">1. 연결 준비</li>
+        <li id="step-chat">2. 이야기 나누기</li>
+        <li id="step-draw">3. 마음 그리기</li>
+      </ol>
+      <noscript><p>이 활동에는 JavaScript가 필요해요. 브라우저에서 JavaScript를 활성화해 주세요.</p></noscript>
+      <section id="key-panel" class="key-panel" aria-labelledby="key-title">
+        <h2 id="key-title">대화를 시작할 준비를 해요</h2>
+        <p>본인의 OpenAI API 키를 입력하면 연결을 확인하고 활동이 열려요.</p>
+        <form id="key-form" class="key-form">
+          <label for="api-key">OpenAI API 키</label>
+          <div class="key-input-row">
+            <input id="api-key" name="api-key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk-…" required aria-describedby="key-help key-status" />
+            <button id="verify-key" class="button button-primary" type="submit">키 확인하고 시작하기</button>
+          </div>
+        </form>
+        <p id="key-help" class="field-hint">키는 이 페이지의 메모리에서만 사용하며 브라우저 저장소에 저장하지 않아요. 새로고침하면 다시 입력해야 해요.</p>
+        <p class="field-hint">브라우저에서 OpenAI로 직접 요청하므로 키가 브라우저에 노출되며, 연결 확인과 대화에 API 사용 요금이 발생할 수 있어요. 대화 내용은 OpenAI로 전송돼요.</p>
+        <p id="key-status" class="status-message" role="status" aria-live="polite"></p>
       </section>
-      <aside class="preparation-aside" aria-label="예정된 활동 순서">
-        <h2>앞으로 함께할 활동</h2>
-        <ol class="upcoming-list"><li>Google 계정으로 로그인하기</li><li>챗봇과 오늘의 공부 이야기 나누기</li><li>대화를 마치고 그림 그리기</li><li>그림을 제출해 하루 남기기</li></ol>
-      </aside>
+
+      <div id="activity-workspace" hidden>
+        <section id="chat-panel" aria-labelledby="chat-title">
+          <div class="section-toolbar">
+            <div><h2 id="chat-title" tabindex="-1">오늘 학교 공부는 어땠나요?</h2><p class="field-hint">말하고 싶은 만큼, 편안하게 이야기해요.</p></div>
+            <button id="change-key" class="text-button" type="button">API 키 변경</button>
+          </div>
+          <div class="chat-meta"><p id="turn-counter" role="status">완료한 대화 0 / 7회</p><p>학생의 말과 챗봇의 답변 한 쌍이 1회예요.</p></div>
+          <div id="chat-messages" class="chat-messages" role="log" aria-label="챗봇과 나눈 대화" aria-live="polite" aria-relevant="additions" tabindex="0"></div>
+          <form id="chat-form" class="chat-form">
+            <label for="chat-input">나의 이야기</label>
+            <textarea id="chat-input" name="message" rows="3" maxlength="1200" placeholder="오늘 수업에서 기억에 남는 순간을 들려주세요." aria-describedby="chat-input-help chat-status" required></textarea>
+            <div class="composer-footer"><p id="chat-input-help" class="field-hint">Enter로 보내기, Shift + Enter로 줄바꿈. 최대 1,200자.</p><button id="send-message" class="button button-primary" type="submit">이야기 보내기</button></div>
+          </form>
+          <p id="chat-status" class="status-message" role="status" aria-live="polite"></p>
+          <div class="finish-chat-row"><p id="finish-hint">대화를 3회 이상 나누면 그림으로 넘어갈 수 있어요.</p><button id="finish-chat" class="button button-secondary" type="button" disabled>Chatbot과의 대화 끝내기</button></div>
+          <p class="field-hint activity-footnote">AI의 답변은 정확하지 않을 수 있어요. 이름, 연락처, 학교명 같은 개인정보는 적지 않아도 괜찮아요.</p>
+        </section>
+
+        <section id="drawing-panel" aria-labelledby="drawing-title" hidden>
+          <div class="section-toolbar"><div><h2 id="drawing-title" tabindex="-1">오늘을 나만의 색으로 표현해요</h2><p class="field-hint">멋진 그림이 아니어도 괜찮아요. 선이나 색만으로도 충분해요.</p></div></div>
+          <details class="conversation-review"><summary>나눈 대화 다시 보기</summary><div id="conversation-review" class="conversation-transcript"></div></details>
+          <div class="drawing-layout">
+            <aside class="drawing-controls" aria-label="그림 도구">
+              <div class="tool-buttons" role="group" aria-label="그리기 도구"><button id="pen-tool" class="tool-button" type="button" aria-pressed="true">펜</button><button id="eraser-tool" class="tool-button" type="button" aria-pressed="false">지우개</button></div>
+              <fieldset id="color-palette" class="color-palette"><legend>펜 색상</legend>
+                <label class="color-option"><input type="radio" name="pen-color" value="#303640" checked aria-label="먹색" /><span class="color-chip swatch-ink" aria-hidden="true"></span></label>
+                <label class="color-option"><input type="radio" name="pen-color" value="#c6534d" aria-label="빨강" /><span class="color-chip swatch-red" aria-hidden="true"></span></label>
+                <label class="color-option"><input type="radio" name="pen-color" value="#e69a45" aria-label="주황" /><span class="color-chip swatch-orange" aria-hidden="true"></span></label>
+                <label class="color-option"><input type="radio" name="pen-color" value="#edcb50" aria-label="노랑" /><span class="color-chip swatch-yellow" aria-hidden="true"></span></label>
+                <label class="color-option"><input type="radio" name="pen-color" value="#4b8c70" aria-label="초록" /><span class="color-chip swatch-green" aria-hidden="true"></span></label>
+                <label class="color-option"><input type="radio" name="pen-color" value="#558ac6" aria-label="파랑" /><span class="color-chip swatch-blue" aria-hidden="true"></span></label>
+                <label class="color-option"><input type="radio" name="pen-color" value="#9471ad" aria-label="보라" /><span class="color-chip swatch-purple" aria-hidden="true"></span></label>
+                <label class="color-option"><input type="radio" name="pen-color" value="#97694f" aria-label="갈색" /><span class="color-chip swatch-brown" aria-hidden="true"></span></label>
+              </fieldset>
+              <div class="range-control"><label for="brush-brightness">펜 명도 <output id="brightness-value" for="brush-brightness">100%</output></label><input id="brush-brightness" type="range" min="20" max="180" value="100" step="5" /></div>
+              <div class="range-control"><label for="brush-opacity">불투명도 <output id="opacity-value" for="brush-opacity">100%</output></label><input id="brush-opacity" type="range" min="5" max="100" value="100" step="5" /></div>
+              <div class="range-control"><label for="brush-size">브러시 크기 <output id="size-value" for="brush-size">12px</output></label><input id="brush-size" type="range" min="2" max="60" value="12" step="1" /></div>
+              <p id="tool-hint" class="field-hint">고른 색상에 명도와 불투명도를 적용해요.</p>
+              <div class="history-buttons"><button id="undo-drawing" class="tool-button" type="button" disabled>실행 취소</button><button id="redo-drawing" class="tool-button" type="button" disabled>다시 실행</button></div>
+              <button id="clear-drawing" class="text-button" type="button" disabled>그림 전체 지우기</button>
+              <div id="clear-confirmation" class="clear-confirmation" hidden><p>그림을 모두 지울까요?</p><button id="confirm-clear" class="tool-button" type="button">모두 지우기</button><button id="cancel-clear" class="tool-button" type="button">취소</button></div>
+            </aside>
+            <div class="drawing-surface">
+              <div class="canvas-frame"><canvas id="drawing-canvas" width="1200" height="800" aria-label="오늘 하루를 표현하는 그림판" aria-describedby="canvas-help">이 브라우저는 그림판을 지원하지 않아요. 최신 브라우저를 이용해 주세요.</canvas></div>
+              <p id="canvas-help" class="field-hint">마우스, 터치, 펜으로 그릴 수 있어요. 화면 크기가 바뀌어도 그림은 유지돼요.</p>
+            </div>
+          </div>
+          <div class="drawing-actions"><button id="download-drawing" class="button button-primary" type="button" disabled>PNG로 저장하기</button><button id="submit-drawing" class="button button-secondary" type="button" disabled aria-describedby="submission-note">제출하기</button></div>
+          <p id="drawing-status" class="status-message" role="status" aria-live="polite"></p>
+          <p id="submission-note" class="field-hint">Firebase 제출 기능은 아직 연결되지 않았어요. 그림은 PNG로 저장할 수 있고, 서버로 전송되지 않아요.</p>
+        </section>
+      </div>
+      <p class="field-hint session-note">대화와 그림은 새로고침하거나 페이지를 닫으면 사라져요. 그림을 완성하면 PNG로 저장해 주세요.</p>
     </main>
     <footer class="site-footer container"><p>서두르지 않아도 괜찮아요.</p><span>오늘의 마음</span></footer>
     <script type="module" src="/src/main.js"></script>
