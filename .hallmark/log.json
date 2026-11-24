@@ -1,0 +1,24 @@
+[
+  {
+    "scope": "app",
+    "shape": "app screen",
+    "theme": "hum",
+    "axes": "light/rounded-sans/chromatic-yellow",
+    "nav": "wordmark and activity guide",
+    "footer": "quiet supportive message",
+    "signature": "student and teacher entry sheets",
+    "entry": "index.html",
+    "imagery": "none; navigation screen",
+    "photos": [],
+    "waived": ["39b: 48px touch targets", "65: user requested warm palette with sans typography"],
+    "prompt": "Warm Korean SEL application entry, student and teacher navigation only",
+    "validation": {
+      "build": "passed; all three root HTML pages emitted",
+      "styles": "sloplint: 0 FAIL, 0 REFLEX, 0 WARN across stylesheets",
+      "navigation": "all pages and bundled assets returned HTTP 200; entry and return link targets verified",
+      "render": "unavailable: puppeteer-core is not installed",
+      "sourceHtmlLint": "false positives for focus and active: linter does not trace CSS imports from Vanilla JS; both verified in built CSS",
+      "finishReview": "in-thread source review; visual review unavailable without renderer"
+    }
+  }
+]

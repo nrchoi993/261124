@@ -1,0 +1,10 @@
+{
+  "scanned": "2026-11-24",
+  "findings": {
+    "framework": "Vanilla JavaScript and Vite 8, package.json:7",
+    "entry": "Root HTML and src JavaScript/CSS, AGENTS.md:6",
+    "design": "Vite starter without an established application design"
+  },
+  "preserve": ["Vanilla JavaScript", "CSS imports from module entries", "Netlify dist output"],
+  "introduce": ["Hum palette", "Korean system typography", "Responsive student and teacher entry screen"]
+}

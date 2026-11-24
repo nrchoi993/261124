@@ -1,0 +1,79 @@
+/* Hallmark · shape: app screen · genre: playful · theme: Hum (deal 1/3)
+ * nav: wordmark and guide · signature: student and teacher entry sheets · states: navigation and preparation
+ * axes: light/rounded-sans/chromatic-yellow · posture: restrained · v2.0.0 */
+/* Hallmark · pre-emit critique: simple entry screen; Korean system fonts preserve legibility; no sample student data. */
+/* waive: 39b — entry actions use 48px targets for touch access; 65 — cream is requested warmth, using a sans face. */
+@import './tokens.css';
+@import './base.css';
+
+body { min-height: 100svh; display: flex; flex-direction: column; word-break: keep-all; overflow-wrap: break-word; }
+main { flex: 1; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.4; }
+.container { max-width: var(--container); }
+.site-header { min-height: 112px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); }
+.wordmark { display: inline-flex; flex-direction: column; gap: var(--space-2xs); font-size: 23px; font-weight: 700; letter-spacing: -0.06em; text-decoration: none; }
+.brand-caption { font-size: 12px; color: var(--color-muted); font-weight: 400; letter-spacing: 0; }
+nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--color-muted); text-decoration: none; white-space: nowrap; }
+nav a:hover { color: var(--color-ink); text-decoration: underline; }
+.skip-link { position: fixed; transform: translateY(-200%); z-index: var(--z-toast); padding: var(--space-sm) 20px; background: var(--color-ink); color: var(--color-paper); }
+.skip-link:focus-visible { transform: none; }
+.welcome { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: var(--space-2xl); align-items: center; padding-block: var(--space-2xl) 80px; }
+.welcome h1 { font-size: 48px; font-weight: 600; letter-spacing: -0.065em; line-height: 1.4; }
+.intro { margin-top: var(--space-lg); font-size: 18px; line-height: 1.8; color: var(--color-ink-2); }
+.gentle-note { margin-top: 36px; color: var(--color-muted); line-height: 1.9; font-size: 15px; }
+.entry-options { display: grid; gap: 20px; }
+.entry { padding: 32px 32px; border-radius: var(--radius-card); }
+.entry-student { background: var(--color-paper-2); }
+.entry-teacher { background: var(--color-teacher-surface); }
+.entry h2 { font-size: 23px; }
+.entry p { margin-top: var(--space-sm); color: var(--color-muted); font-size: 15px; line-height: 1.8; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: var(--space-sm) var(--space-lg); border: 1px solid var(--color-button-edge); border-radius: var(--radius-stock); margin-top: var(--space-lg); font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; transition: transform var(--dur-micro) var(--ease-out); }
+.button-primary { background: var(--color-accent); color: var(--color-accent-ink); box-shadow: 0 3px 0 var(--color-accent-deep); }
+.button-secondary { background: var(--color-button-edge); color: var(--color-ink); border-color: var(--color-muted); }
+.button:hover { transform: translateY(-2px); }
+.button:active { transform: translateY(2px); }
+.activity-guide { border-top: 1px solid var(--color-rule); padding-block: 36px 48px; scroll-margin-top: var(--space-lg); }
+.guide-heading { display: flex; justify-content: space-between; align-items: center; gap: var(--space-md); }
+.guide-heading h2 { font-size: 21px; }
+.guide-heading p { color: var(--color-muted); font-size: 14px; }
+.activity-steps { list-style: none; counter-reset: activity; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; padding: 0; margin: 32px 0; }
+.activity-steps li { counter-increment: activity; border-left: 2px solid var(--color-rule); padding-left: 20px; }
+.activity-steps h3 { font-size: 17px; }
+.activity-steps h3::before { content: counter(activity) '. '; color: var(--color-muted); font-weight: 400; }
+.activity-steps p { color: var(--color-muted); margin-top: var(--space-sm); font-size: 14px; line-height: 1.8; }
+.availability-note { font-size: 13px; color: var(--color-muted); line-height: 1.8; }
+.site-footer { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding-block: var(--space-lg); color: var(--color-muted); font-size: 13px; }
+.preparation { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-2xl); align-items: center; padding-block: 88px 112px; }
+.preparation h1 { font-size: 36px; }
+.preparation-content > p:not(.intro) { margin-top: var(--space-lg); color: var(--color-muted); line-height: 1.9; }
+.preparation-content .preparation-notice { padding-block: var(--space-lg); border-block: 1px solid var(--color-rule); font-size: 14px; }
+.preparation-aside { background: var(--color-paper-2); border-radius: var(--radius-card); padding: 32px; }
+.preparation-aside h2 { font-size: 20px; }
+.upcoming-list { margin: var(--space-lg) 0 0; padding-left: var(--space-lg); color: var(--color-muted); }
+.upcoming-list li { padding-block: var(--space-sm); padding-left: var(--space-xs); }
+
+@media (max-width: 60rem) {
+  .welcome, .preparation { gap: 32px; }
+  .welcome h1 { font-size: 38px; }
+  .entry { padding: 28px; }
+  .entry h2 { font-size: 21px; }
+  .guide-heading { align-items: flex-start; flex-direction: column; gap: var(--space-xs); }
+}
+@media (max-width: 42rem) {
+  .site-header { min-height: 92px; }
+  .welcome, .preparation { grid-template-columns: minmax(0, 1fr); padding-block: 36px 48px; gap: 36px; }
+  .welcome h1, .preparation h1 { font-size: 32px; }
+  .intro { font-size: 16px; margin-top: 20px; }
+  .gentle-note { margin-top: var(--space-lg); }
+  .entry { padding: 28px var(--space-lg); }
+  .button { width: 100%; padding-inline: var(--space-md); }
+  .desktop-break { display: none; }
+  .activity-steps { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+  .activity-steps br { display: none; }
+  .site-footer { align-items: flex-start; flex-direction: column; gap: var(--space-xs); padding-bottom: 28px; }
+  .preparation-aside { padding: 28px var(--space-lg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+  .button:hover, .button:active { transform: none; }
+}
