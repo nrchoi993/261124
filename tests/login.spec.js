@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { mockAdminUids } from './helpers/adminUids.js'
 
 const googleUser = {
   uid: 'test-student',
@@ -51,13 +52,14 @@ async function mockAuth(page, scenario = {}) {
 async function expectLinks(page, visible) {
   for (const href of ['/student.html', '/teacherMonitor.html']) {
     const link = page.locator(`a[href="${href}"]`)
-    if (visible) await expect(link).toBeVisible()
+    if (visible && href === '/student.html') await expect(link).toBeVisible()
     else await expect(link).toBeHidden()
   }
 }
 
 test.beforeEach(async ({ page }) => {
   page.on('pageerror', error => { throw error })
+  await mockAdminUids(page)
 })
 
 test('Firebase initializes from environment or reports missing config without exposing activity links', async ({ page }) => {

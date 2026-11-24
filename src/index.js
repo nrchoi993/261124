@@ -1,6 +1,7 @@
 import './styles.css'
 import './login.css'
 import { watchAuthState, signInWithGoogle, signOutOfGoogle } from './firebaseAuth.js'
+import { isAdmin, isGoogleUser } from './accessControl.js'
 
 const loginButton = document.getElementById('google-login')
 const logoutButton = document.getElementById('google-logout')
@@ -14,10 +15,6 @@ let pending = null
 let unsubscribe = null
 let configurationError = false
 
-function isGoogleUser(user) {
-  return Boolean(user?.providerData?.some(provider => provider.providerId === 'google.com'))
-}
-
 function showStatus(message, isError = false) {
   status.textContent = message
   status.classList.toggle('is-error', isError)
@@ -26,7 +23,9 @@ function showStatus(message, isError = false) {
 function render() {
   const signedIn = ready && isGoogleUser(currentUser)
   const showLinks = signedIn && pending !== 'logout'
-  for (const link of activityLinks) link.hidden = !showLinks
+  for (const link of activityLinks) {
+    link.hidden = !showLinks || (link.hasAttribute('data-admin-only') && !isAdmin(currentUser))
+  }
   loginButton.hidden = signedIn
   logoutButton.hidden = !currentUser
   loginButton.disabled = !ready || Boolean(pending) || configurationError
@@ -37,8 +36,8 @@ function render() {
   userLabel.hidden = !signedIn
   userLabel.textContent = signedIn ? `${currentUser.displayName || '사용자'}님, 반가워요.` : ''
   document.getElementById('login-description').textContent = signedIn
-    ? '이제 학생 활동 또는 교사 공간을 선택해 주세요.'
-    : '로그인하면 학생 활동과 교사 공간으로 이동할 수 있어요.'
+    ? isAdmin(currentUser) ? '학생 활동 또는 교사 모니터링을 선택해 주세요.' : '이제 학생 활동을 시작할 수 있어요.'
+    : '로그인하면 학생 활동을 시작할 수 있어요. 교사 모니터링은 관리자 계정으로 이용해요.'
 }
 
 function loginErrorMessage(error) {
@@ -66,7 +65,7 @@ function observeAuth() {
       render()
       showStatus(isGoogleUser(user)
         ? 'Google 로그인이 확인되었어요.'
-        : 'Google로 로그인하면 두 공간의 이동 버튼이 나타나요.')
+        : 'Google로 로그인하면 학생 활동을 시작할 수 있어요.')
     }, error => {
       currentUser = null
       ready = true
